@@ -22,6 +22,16 @@ FROM ubuntu:24.04-arm64
 
 ---
 
+ **Default Password for user (nonroot) and VNC:** `abcd1234`
+
+ Sudo access is allowed without requiring a password, so feel free to change this option in Dockerfile by removing the line below:
+
+ ```Dockerfile
+ RUN echo 'nonroot       ALL=(ALL)       NOPASSWD:ALL' >> /etc/sudoers
+ ```
+
+---
+
 ## Getting Started
 
 ### Prerequisites
