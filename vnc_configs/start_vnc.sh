@@ -1,8 +1,4 @@
 #!/bin/bash
-# export USER="nonroot"
-# export DISPLAY=1
-# vncserver -kill :*
-# vncserver :1 -geometry 1920x1080 -depth 24 -httpport 5901
 
 # Specify the VNC display number
 DISPLAY_NUM=1
