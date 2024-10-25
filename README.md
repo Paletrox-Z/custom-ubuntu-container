@@ -90,6 +90,7 @@ If you'd like to avoid using the script, follow these commands manually:
 For additional configuration and troubleshooting, refer to the following:
 1. [How to Install and Configure VNC Server on Ubuntu](https://bytexd.com/how-to-install-configure-vnc-server-on-ubuntu/)
 2. [Docker Documentation](https://docs.docker.com/)
+2. [ChatGPT](https://chatgpt.com/)
 
 ---
 
