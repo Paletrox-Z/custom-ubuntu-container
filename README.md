@@ -8,7 +8,7 @@ This repository provides a Dockerfile to create a custom, disposable Ubuntu Dock
 The Docker image is based on Ubuntu and includes:
 - The MATE desktop environment for a lightweight GUI.
 - VNC server support for remote desktop access.
-- Utilities like `nano`, `chromium`, and `qbittorrent`.
+- Utilities like `nano`, `Brave Browser`, `Riseup VPN`, and `qbittorrent`.
 
 Currently, this setup has been tested on `x64` architecture, but it can be adapted for `arm64` by modifying the base image in the Dockerfile.
 
@@ -100,7 +100,8 @@ If you'd like to avoid using the script, follow these commands manually:
 For additional configuration and troubleshooting, refer to the following:
 1. [How to Install and Configure VNC Server on Ubuntu](https://bytexd.com/how-to-install-configure-vnc-server-on-ubuntu/)
 2. [Docker Documentation](https://docs.docker.com/)
-2. [ChatGPT](https://chatgpt.com/)
+3. [ChatGPT](https://chatgpt.com/)
+4. [Brave Browser](https://brave.com/linux/)
 
 ---
 

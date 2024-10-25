@@ -9,12 +9,17 @@ LABEL description="A simple Ubuntu container with Ubuntu Mate Desktop to be used
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=:1
 
-# Update the package list, upgrade packages, and install necessary packages
+# Update the package list, upgrade packages, and install some packages
+
 RUN apt update && apt upgrade -y
 RUN apt install -y ubuntu-mate-desktop
-RUN apt install -y sudo nano tightvncserver \
-        net-tools riseup-vpn qbittorrent chromium \
-        dbus-x11 x11-xserver-utils software-properties-common
+RUN apt install -y sudo nano tightvncserver curl \
+        net-tools riseup-vpn qbittorrent dbus-x11 x11-xserver-utils \
+        software-properties-common
+RUN curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+RUN echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|tee /etc/apt/sources.list.d/brave-browser-release.list
+RUN apt update
+RUN apt install brave-browser -y
 
 # Enable firewall access to port 5901
 RUN ufw allow 5901
@@ -27,8 +32,9 @@ RUN useradd -m -s /bin/bash nonroot && echo 'nonroot:abcd1234' | chpasswd && use
 RUN echo 'nonroot       ALL=(ALL)       NOPASSWD:ALL' >> /etc/sudoers
 
 # Copy configuration files
-COPY ./vnc_configs/start_vnc.sh /usr/local/bin/
-COPY ./vnc_configs/xstartup /home/nonroot/.vnc/
+COPY ./files/start_vnc.sh /usr/local/bin/
+COPY ./files/xstartup /home/nonroot/.vnc/
+COPY ./files/brave-browser.desktop /usr/share/applications/
 
 # Change ownership of the VNC configuration files
 RUN chown -R nonroot:nonroot /home/nonroot/
