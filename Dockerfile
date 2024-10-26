@@ -9,32 +9,32 @@ LABEL description="A simple Ubuntu container with Ubuntu Mate Desktop to be used
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=:1
 
-# Update the package list, upgrade packages, and install some packages
-
-RUN apt update && apt upgrade -y
-RUN apt install -y ubuntu-mate-desktop
-RUN apt install -y sudo nano tightvncserver curl \
-        net-tools riseup-vpn qbittorrent dbus-x11 x11-xserver-utils \
-        software-properties-common
-RUN curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-RUN echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|tee /etc/apt/sources.list.d/brave-browser-release.list
-RUN apt update
-RUN apt install brave-browser -y
+# Update the package list, upgrade packages, and install mate-desktop
+# Adding this step here to cache the step, otherwise the large packages needs to be downloaded again
+RUN apt update && apt upgrade -y && apt install -y ubuntu-mate-desktop sudo nano \
+        tightvncserver curl dbus-x11 x11-xserver-utils software-properties-common
 
 # Enable firewall access to port 5901
 RUN ufw allow 5901
 RUN ufw reload
+
+# Copy configuration files
+COPY ./files/start_vnc.sh /usr/local/bin/
+COPY ./files/xstartup /home/nonroot/.vnc/
+COPY ./files/containered-brave-browser.desktop /usr/share/applications/
+
+# Installing additional packages
+# This is where other extra packages can be added in or removed
+RUN curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+RUN echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|tee /etc/apt/sources.list.d/brave-browser-release.list
+RUN apt update
+RUN apt install brave-browser qbittorrent net-tools -y
 
 # Create a new user and add to sudo group
 RUN useradd -m -s /bin/bash nonroot && echo 'nonroot:abcd1234' | chpasswd && usermod -aG sudo nonroot
 
 # Allow the new user to run sudo commands without a password
 RUN echo 'nonroot       ALL=(ALL)       NOPASSWD:ALL' >> /etc/sudoers
-
-# Copy configuration files
-COPY ./files/start_vnc.sh /usr/local/bin/
-COPY ./files/xstartup /home/nonroot/.vnc/
-COPY ./files/brave-browser.desktop /usr/share/applications/
 
 # Change ownership of the VNC configuration files
 RUN chown -R nonroot:nonroot /home/nonroot/
