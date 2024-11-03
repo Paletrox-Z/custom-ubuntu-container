@@ -10,12 +10,16 @@ The Docker image is based on Ubuntu and includes:
 - VNC server support for remote desktop access.
 - Utilities like `nano`, `Tor`, and `qbittorrent`.
 
-Currently, this setup has been tested on `x64` architecture, but it can be adapted for `arm64` by modifying the base image in the Dockerfile.
+Currently, this setup has been tested on `x64` architecture, but it can be adapted for `arm64` by modifying the base image in the Dockerfile & updating necessary configs for the Tor repo.
 
 ### Example of Changing Base Image to ARM64
-To use `arm64`, simply modify the first line in the Dockerfile:
+To use `arm64`, simply modify these lines in the Dockerfile:
 ```dockerfile
+# For base image
 FROM ubuntu:24.04-arm64
+
+# For Tor
+RUN sh -c 'echo "deb [arch=arm64 signed-by=/usr/share/keyrings/deb.torproject.org-keyring.gpg] https://deb.torproject.org/torproject.org $(lsb_release -sc) main" >> /etc/apt/sources.list.d/tor-project.list'
 ```
 
 > **Note:** This setup is for casual use and lacks additional security hardening beyond the default Ubuntu security. Use responsibly, and avoid exposing sensitive data.
@@ -101,6 +105,7 @@ For additional configuration and troubleshooting, refer to the following:
 1. [How to Install and Configure VNC Server on Ubuntu](https://bytexd.com/how-to-install-configure-vnc-server-on-ubuntu/)
 2. [Docker Documentation](https://docs.docker.com/)
 3. [ChatGPT](https://chatgpt.com/)
+4. [Ubuntu Handbook](https://ubuntuhandbook.org/index.php/2021/01/install-tor-tor-browser-ubuntu-20-10-20-04/)
 
 ---
 

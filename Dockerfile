@@ -21,14 +21,14 @@ RUN ufw reload
 # Copy configuration files
 COPY ./files/start_vnc.sh /usr/local/bin/
 COPY ./files/xstartup /home/nonroot/.vnc/
-COPY ./files/containered-brave-browser.desktop /usr/share/applications/
 
 # Installing additional packages
 # This is where other extra packages can be added in or removed
-RUN curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-RUN echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|tee /etc/apt/sources.list.d/brave-browser-release.list
-RUN apt update
-RUN apt install brave-browser qbittorrent net-tools -y
+RUN apt update && apt upgrade -y && apt install qbittorrent net-tools apt-transport-https wget -y
+RUN sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/deb.torproject.org-keyring.gpg] https://deb.torproject.org/torproject.org $(lsb_release -sc) main" >> /etc/apt/sources.list.d/tor-project.list'
+RUN cd /tmp/ && wget https://deb.torproject.org/torproject.org/pool/main/d/deb.torproject.org-keyring/deb.torproject.org-keyring_2024.05.22_all.deb && \
+        apt install /tmp/deb.torproject.org-keyring*.deb -y && rm -rf /tmp/deb.torproject.org-keyring*.deb
+RUN apt update && apt install tor torbrowser-launcher -y
 
 # Create a new user and add to sudo group
 RUN useradd -m -s /bin/bash nonroot && echo 'nonroot:abcd1234' | chpasswd && usermod -aG sudo nonroot

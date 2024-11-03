@@ -14,6 +14,7 @@ start_vnc() {
     echo "Starting VNC server on :${DISPLAY_NUM} with geometry ${GEOMETRY} and depth ${DEPTH}"
     vncserver -kill :${DISPLAY_NUM} > /dev/null 2>&1 || true  # Clean up previous instances
     vncserver -depth ${DEPTH} -geometry ${GEOMETRY} :${DISPLAY_NUM}
+    echo "Once you are done, please hit Ctrl + C to break and delete the container"
 }
 
 # Function to stop the VNC server
