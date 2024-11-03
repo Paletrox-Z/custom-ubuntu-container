@@ -11,8 +11,9 @@ ENV DISPLAY=:1
 
 # Update the package list, upgrade packages, and install mate-desktop
 # Adding this step here to cache the step, otherwise the large packages needs to be downloaded again
-RUN apt update && apt upgrade -y && apt install -y ubuntu-mate-desktop sudo nano \
-        tightvncserver curl dbus-x11 x11-xserver-utils software-properties-common
+RUN apt update && apt install -y ubuntu-mate-desktop sudo nano \
+        tightvncserver curl dbus-x11 x11-xserver-utils software-properties-common \
+        net-tools apt-transport-https wget
 
 # Enable firewall access to port 5901
 RUN ufw allow 5901
@@ -24,11 +25,10 @@ COPY ./files/xstartup /home/nonroot/.vnc/
 
 # Installing additional packages
 # This is where other extra packages can be added in or removed
-RUN apt update && apt upgrade -y && apt install qbittorrent net-tools apt-transport-https wget -y
 RUN sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/deb.torproject.org-keyring.gpg] https://deb.torproject.org/torproject.org $(lsb_release -sc) main" >> /etc/apt/sources.list.d/tor-project.list'
 RUN cd /tmp/ && wget https://deb.torproject.org/torproject.org/pool/main/d/deb.torproject.org-keyring/deb.torproject.org-keyring_2024.05.22_all.deb && \
         apt install /tmp/deb.torproject.org-keyring*.deb -y && rm -rf /tmp/deb.torproject.org-keyring*.deb
-RUN apt update && apt install tor torbrowser-launcher -y
+RUN apt update && apt upgrade -y && apt install tor torbrowser-launcher qbittorrent -y
 
 # Create a new user and add to sudo group
 RUN useradd -m -s /bin/bash nonroot && echo 'nonroot:abcd1234' | chpasswd && usermod -aG sudo nonroot
@@ -60,9 +60,6 @@ RUN ln -sf /home/nonroot/.vnc/xstartup /home/nonroot/.xinitrc
 
 # Export required variable
 RUN export USER=nonroot
-
-# Go Home
-RUN cd /home/nonroot
 
 # Create XAuthority
 RUN touch /home/nonroot/.Xauthority
