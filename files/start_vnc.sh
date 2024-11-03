@@ -11,6 +11,9 @@ export USER="nonroot"
 
 # Function to start the VNC server
 start_vnc() {
+    if ! pgrep -x "dbus-daemon" > /dev/null; then
+        dbus-launch --exit-with-session &
+    fi
     echo "Starting VNC server on :${DISPLAY_NUM} with geometry ${GEOMETRY} and depth ${DEPTH}"
     vncserver -kill :${DISPLAY_NUM} > /dev/null 2>&1 || true  # Clean up previous instances
     vncserver -depth ${DEPTH} -geometry ${GEOMETRY} :${DISPLAY_NUM}
